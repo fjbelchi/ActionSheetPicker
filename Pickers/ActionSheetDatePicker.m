@@ -32,6 +32,7 @@
 @interface ActionSheetDatePicker()
 @property (nonatomic, assign) UIDatePickerMode datePickerMode;
 @property (nonatomic, retain) NSDate *selectedDate;
+@property (nonatomic, retain) NSDate *minDate;
 @end
 
 @implementation ActionSheetDatePicker
@@ -39,19 +40,20 @@
 @synthesize datePickerMode = _datePickerMode;
 
 + (id)showPickerWithTitle:(NSString *)title 
-           datePickerMode:(UIDatePickerMode)datePickerMode selectedDate:(NSDate *)selectedDate                                                                             
+           datePickerMode:(UIDatePickerMode)datePickerMode selectedDate:(NSDate *)selectedDate minDate:(NSDate *)minDate                                                                          
                  target:(id)target action:(SEL)action origin:(id)origin {
-    ActionSheetDatePicker *picker = [[ActionSheetDatePicker alloc] initWithTitle:title datePickerMode:datePickerMode selectedDate:selectedDate target:target action:action origin:origin];
+    ActionSheetDatePicker *picker = [[ActionSheetDatePicker alloc] initWithTitle:title datePickerMode:datePickerMode selectedDate:selectedDate minDate:minDate target:target action:action origin:origin];
     [picker showActionSheetPicker];
     return [picker autorelease];
 }
 
-- (id)initWithTitle:(NSString *)title datePickerMode:(UIDatePickerMode)datePickerMode selectedDate:(NSDate *)selectedDate target:(id)target action:(SEL)action origin:(id)origin {
+- (id)initWithTitle:(NSString *)title datePickerMode:(UIDatePickerMode)datePickerMode selectedDate:(NSDate *)selectedDate minDate:(NSDate *)minDate target:(id)target action:(SEL)action origin:(id)origin {
     self = [super initWithTarget:target successAction:action cancelAction:nil origin:origin];
     if (self) {
         self.title = title;
         self.datePickerMode = datePickerMode;
         self.selectedDate = selectedDate;
+        self.minDate = minDate;
     }
     return self;
 }
@@ -67,7 +69,7 @@
     datePicker.datePickerMode = self.datePickerMode;
     [datePicker setDate:self.selectedDate animated:NO];
     [datePicker addTarget:self action:@selector(eventForDatePicker:) forControlEvents:UIControlEventValueChanged];
-    
+    [datePicker setMinimumDate:self.minDate];
     //need to keep a reference to the picker so we can clear the DataSource / Delegate when dismissing (not used in this picker, but just in case somebody uses this as a template for another picker)
     self.pickerView = datePicker;
     
